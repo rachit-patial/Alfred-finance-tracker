@@ -1,0 +1,17 @@
+{
+  "balance": 950,
+  "transactions": [
+    {
+      "Income": {
+        "amount": 1000,
+        "description": "Salary"
+      }
+    },
+    {
+      "Expense": {
+        "amount": 50,
+        "description": "chocolate"
+      }
+    }
+  ]
+}

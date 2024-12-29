@@ -1,0 +1,17 @@
+# Ignore the target directory, where build artifacts are stored
+/target/
+
+# Ignore Cargo.lock (optional, you may want to keep it for applications)
+Cargo.lock
+
+# Ignore any IDE-specific files (for example, Visual Studio Code)
+.vscode/
+
+# Ignore Rust build artifacts and backup files
+*.rs.bk
+
+# Ignore macOS system files
+.DS_Store
+
+# Igonore account data
+account_data.json
