@@ -14,7 +14,7 @@ Alfred is a command-line utility designed to help you manage your personal finan
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/alfred-expense-tracker.git
+   git clone https://github.com/rachit-patial/Alfred-finance-tracker.git
    cd alfred-expense-tracker
    ```
 
