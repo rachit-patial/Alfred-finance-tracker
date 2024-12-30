@@ -1,6 +1,5 @@
 use clap::{Arg, ArgAction, Command};
 use serde::{Deserialize, Serialize};
-use std::ffi::c_long;
 use std::fs::{self, File};
 use std::io::{self, Write};
 
