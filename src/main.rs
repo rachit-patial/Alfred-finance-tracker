@@ -57,6 +57,26 @@ impl Account {
             Self::default()
         }
     }
+
+    fn total_income(&self) -> i32 {
+        self.transactions.iter().fold(0, |sum, transaction| {
+            if let Transaction::Income { amount, .. } = transaction {
+                sum + amount
+            } else {
+                sum
+            }
+        })
+    }
+
+    fn total_expenses(&self) -> i32 {
+        self.transactions.iter().fold(0, |sum, transaction| {
+            if let Transaction::Expense { amount, .. } = transaction {
+                sum + amount
+            } else {
+                sum
+            }
+    })
+}
 }
 
 fn call_alfred() {
@@ -86,6 +106,16 @@ fn call_alfred() {
                 .long("balance")
                 .action(ArgAction::SetTrue)
                 .help("View you balance by specifying -b or --balance"))
+        .arg(Arg::new("Total_Expense")
+                .short('E')
+                .long("totalexpense")
+                .action(ArgAction::SetTrue)
+                .help("View your total expenditure by specifying -E or --totalexpenditure"))
+        .arg(Arg::new("Total_Income")
+                .short('I')
+                .long("totalincome")
+                .action(ArgAction::SetTrue)
+                .help("View your total income by specifying -E or --totalincome"))
         .get_matches();
 
     let file_path = "account_data.json";
@@ -109,6 +139,14 @@ fn call_alfred() {
 
     if matches.get_flag("balance") {
         account.show_balance();
+    }
+
+    if matches.get_flag("Total_Expense") {
+        println!("Total expnses: {}", account.total_expenses());
+    }
+
+    if matches.get_flag("Total_Income") {
+        println!("Total Income: {}", account.total_income());
     }
 
     account.save_to_file(file_path);
