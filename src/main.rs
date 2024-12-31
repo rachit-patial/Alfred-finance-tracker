@@ -2,17 +2,20 @@ use printpdf::*;
 use clap::{Arg, ArgAction, Command};
 use serde::{Deserialize, Serialize};
 use std::fs::{self, File};
-use std::io::{self, BufWriter, Write};
+use std::io::{BufWriter, Write};
+use chrono::{DateTime, Utc};
 
 #[derive(Debug, Serialize, Deserialize)]
 enum Transaction {
     Income {
         amount: i32,
         description: Option<String>,
+        timestamp: DateTime<Utc>,
     },
     Expense {
         amount: i32,
         description: Option<String>,
+        timestamp: DateTime<Utc>,
     }
 }
 
@@ -25,7 +28,11 @@ struct Account {
 impl Account {
     fn add_income(&mut self, amount: i32, description: Option<String>) {
         self.balance += amount;
-        self.transactions.push(Transaction::Income { amount, description: description.clone()});
+        self.transactions.push(Transaction::Income { 
+            amount,
+            description: description.clone(),
+            timestamp: Utc::now(),
+        });
         println!("{} has been credited to your account.", amount);
         if let Some(desc) = description.as_ref() {
             println!("Description: {}", desc);
@@ -34,7 +41,11 @@ impl Account {
 
     fn add_expense(&mut self, amount: i32, description: Option<String>) {
         self.balance -= amount;
-        self.transactions.push(Transaction::Expense { amount, description: description.clone() });
+        self.transactions.push(Transaction::Expense {
+             amount,
+            description: description.clone(),
+            timestamp: Utc::now(),    
+        });
         println!("{} has been debited from your account.", amount);
         if let Some(desc) = description.as_ref() {
             println!("Description: {}", desc);
@@ -99,24 +110,26 @@ impl Account {
             }
 
             match transaction {
-                Transaction::Income { amount, description } => {
+                Transaction::Income { amount, description, timestamp } => {
                     current_layer.use_text(
                         format!(
-                            "Income: Rs.{} - {}",
+                            "Income: Rs.{} - {} - {}",
                             amount,
-                            description.clone().unwrap_or_else(|| "No description".to_string())
+                            description.clone().unwrap_or_else(|| "No description".to_string()),
+                            timestamp
                         ),
                         12.0,
                         Mm(10.0),
                         Mm(y_position),
                         &font);
                 }
-                Transaction::Expense { amount, description } => {
+                Transaction::Expense { amount, description, timestamp } => {
                     current_layer.use_text(
                         format!(
-                            "Expense: Rs.{} - {}",
+                            "Expense: Rs.{} - {} - {}",
                             amount,
-                            description.clone().unwrap_or_else(|| "No description".to_string())
+                            description.clone().unwrap_or_else(|| "No description".to_string()),
+                            timestamp
                         ),
                         12.0,
                         Mm(10.0),
@@ -179,6 +192,7 @@ fn call_alfred() {
     let file_path = "account_data.json";
     let mut account = Account::load_from_file(file_path);
 
+
     if let Some(income) = matches.get_one::<String>("income") {
         let description = matches.get_one::<String>("description").map(|s| s.clone());
         match income.parse::<i32>() {
@@ -195,6 +209,9 @@ fn call_alfred() {
         }
     }
 
+    //This is saving file here, the code above writes, the code below just read form the file
+    account.save_to_file(file_path);
+
     if matches.get_flag("balance") {
         account.show_balance();
     }
@@ -210,7 +227,7 @@ fn call_alfred() {
         println!("PDF generated with the name: transaction_history.pdf");
     }
 
-    account.save_to_file(file_path);
+    //account.save_to_file(file_path);
 }
 }
 
