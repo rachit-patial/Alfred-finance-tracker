@@ -222,13 +222,13 @@ fn call_alfred() {
 
     if matches.get_flag("Total_Income") {
         println!("Total Income: {}", account.total_income());
+    }
     if matches.get_flag("Passbook") {
         account.generate_passbook("transaction_history.pdf");
         println!("PDF generated with the name: transaction_history.pdf");
     }
 
     //account.save_to_file(file_path);
-}
 }
 
 
