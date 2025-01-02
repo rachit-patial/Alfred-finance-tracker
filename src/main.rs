@@ -3,19 +3,19 @@ use clap::{Arg, ArgAction, Command};
 use serde::{Deserialize, Serialize};
 use std::fs::{self, File};
 use std::io::{BufWriter, Write};
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, Local};
 
 #[derive(Debug, Serialize, Deserialize)]
 enum Transaction {
     Income {
         amount: i32,
         description: Option<String>,
-        timestamp: DateTime<Utc>,
+        timestamp: DateTime<Local>,
     },
     Expense {
         amount: i32,
         description: Option<String>,
-        timestamp: DateTime<Utc>,
+        timestamp: DateTime<Local>,
     }
 }
 
@@ -31,7 +31,7 @@ impl Account {
         self.transactions.push(Transaction::Income { 
             amount,
             description: description.clone(),
-            timestamp: Utc::now(),
+            timestamp: Local::now(),
         });
         println!("{} has been credited to your account.", amount);
         if let Some(desc) = description.as_ref() {
@@ -44,7 +44,7 @@ impl Account {
         self.transactions.push(Transaction::Expense {
              amount,
             description: description.clone(),
-            timestamp: Utc::now(),    
+            timestamp: Local::now(),    
         });
         println!("{} has been debited from your account.", amount);
         if let Some(desc) = description.as_ref() {
