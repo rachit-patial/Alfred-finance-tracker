@@ -154,6 +154,7 @@ fn call_alfred() {
                 .long("income")
                 .value_name("Income Amount")
                 .action(ArgAction::Set)
+                .allow_hyphen_values(true)
                 .help("Add you income by specifying -i or --income"))
         .arg(Arg::new("description")
                 .short('d')
@@ -166,6 +167,7 @@ fn call_alfred() {
                 .long("expense")
                 .value_name("Expense Amount")
                 .action(ArgAction::Set)
+                .allow_hyphen_values(true)
                 .help("Add your expense by specifying -e or --expense"))
         .arg(Arg::new("balance")
                 .short('b')
@@ -196,7 +198,8 @@ fn call_alfred() {
     if let Some(income) = matches.get_one::<String>("income") {
         let description = matches.get_one::<String>("description").map(|s| s.clone());
         match income.parse::<i32>() {
-            Ok(amount) => account.add_income(amount, description),
+            Ok(amount) if amount > 0 => account.add_income(amount, description),
+            Ok(amount) => println!("Income amount must be a postivie number, but got {}", amount),
             Err(_) => println!("Invalid input for income {}", income),
         }
     }
@@ -204,7 +207,9 @@ fn call_alfred() {
     if let Some(expense) = matches.get_one::<String>("expense") {
         let description = matches.get_one::<String>("description").map(|s| s.clone());
         match expense.parse::<i32>() {
-            Ok(amount) => account.add_expense(amount, description),
+            Ok(amount) if amount > 0 => account.add_expense(amount, description),
+            Ok(amount) => println!("Expense amount must be a postivie number, but got {}", amount),
+            //if the parsing fails
             Err(_) => println!("Invalid input for income {}", expense),
         }
     }
@@ -228,7 +233,6 @@ fn call_alfred() {
         println!("PDF generated with the name: transaction_history.pdf");
     }
 
-    //account.save_to_file(file_path);
 }
 
 
