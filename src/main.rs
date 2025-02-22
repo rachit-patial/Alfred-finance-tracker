@@ -1,23 +1,12 @@
+mod transaction;
+
 use printpdf::*;
 use clap::{Arg, ArgAction, Command};
 use serde::{Deserialize, Serialize};
 use std::fs::{self, File};
 use std::io::{BufWriter, Write};
-use chrono::{DateTime, Local};
-
-#[derive(Debug, Serialize, Deserialize)]
-enum Transaction {
-    Income {
-        amount: i32,
-        description: Option<String>,
-        timestamp: DateTime<Local>,
-    },
-    Expense {
-        amount: i32,
-        description: Option<String>,
-        timestamp: DateTime<Local>,
-    }
-}
+use chrono::{Local};
+use transaction::Transaction;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 struct Account {
